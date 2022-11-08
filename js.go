@@ -2575,6 +2575,10 @@ func checkMsg(msg *Msg, checkSts, isNoWait bool) (usrMsg bool, err error) {
 			// one message when making requests without no_wait.
 			err = ErrTimeout
 		}
+	case jetStream409Sts:
+		if strings.Contains(strings.ToLower(string(msg.Header.Get(descrHdr))), "consumer deleted") {
+			err = ErrConsumerDeleted
+		}
 	default:
 		err = fmt.Errorf("nats: %s", msg.Header.Get(descrHdr))
 	}
